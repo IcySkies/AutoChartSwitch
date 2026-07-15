@@ -9,8 +9,6 @@ namespace AutoChartSwitch.App;
 
 public sealed class TechStatsRenderer : FrameworkElement
 {
-    private const double NativeWidth = 124;
-    private const double NativeHeight = 46;
     private const double AnimationStepSeconds = 1d / 60d;
     private static readonly BitmapImage SixRowLabels = LoadImage("sp_techstats2025_0_padded.png");
     private static readonly BitmapImage FiveRowLabels = LoadImage("sp_techstats2025_1_padded.png");
@@ -25,8 +23,8 @@ public sealed class TechStatsRenderer : FrameworkElement
 
     public TechStatsRenderer()
     {
-        Width = NativeWidth * 4;
-        Height = NativeHeight * 4;
+        Width = TechStatsLayout.Width;
+        Height = TechStatsLayout.Height;
         SnapsToDevicePixels = true;
         UseLayoutRounding = true;
         RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
@@ -64,18 +62,19 @@ public sealed class TechStatsRenderer : FrameworkElement
         base.OnRender(drawingContext);
         if (!_hasChart || ActualWidth <= 0 || ActualHeight <= 0) return;
 
-        var scale = Math.Min(ActualWidth / NativeWidth, ActualHeight / NativeHeight);
-        var offsetX = (ActualWidth - (NativeWidth * scale)) / 2;
-        var offsetY = (ActualHeight - (NativeHeight * scale)) / 2;
+        var scale = Math.Min(ActualWidth / TechStatsLayout.Width, ActualHeight / TechStatsLayout.Height);
+        var offsetX = (ActualWidth - (TechStatsLayout.Width * scale)) / 2;
+        var offsetY = (ActualHeight - (TechStatsLayout.Height * scale)) / 2;
         drawingContext.PushTransform(new TranslateTransform(offsetX, offsetY));
         drawingContext.PushTransform(new ScaleTransform(scale, scale));
 
         var hasGimmick = _targetValues[5] > 0;
         var rowCount = hasGimmick ? 6 : 5;
-        drawingContext.DrawImage(hasGimmick ? SixRowLabels : FiveRowLabels, new Rect(4, 3, 36, 40));
+        drawingContext.DrawImage(hasGimmick ? SixRowLabels : FiveRowLabels,
+            new Rect(0, 0, TechStatsLayout.LabelWidth, TechStatsLayout.LabelHeight));
         for (var i = 0; i < rowCount; i++)
         {
-            var rowTop = 3 + (i * (hasGimmick ? 7 : 8));
+            var rowTop = TechStatsLayout.GetRowTop(i, hasGimmick);
             DrawNumber(drawingContext, _displayValues[i], rowTop);
             DrawBar(drawingContext, _animatedValues[i], rowTop);
         }
@@ -113,23 +112,26 @@ public sealed class TechStatsRenderer : FrameworkElement
         if (value > 200)
         {
             var hue = ((_clock.Elapsed.TotalMilliseconds / 2d) % 255d + 255d) % 255d;
-            drawingContext.DrawRectangle(new SolidColorBrush(FromGameMakerHsv(hue, 200, 255)), null, new Rect(42, top, 47, 4));
-            drawingContext.DrawRectangle(Brushes.White, null, new Rect(42, top, 47 * Math.Min(value - 200, 200) / 200d, 4));
+            drawingContext.DrawRectangle(new SolidColorBrush(FromGameMakerHsv(hue, 200, 255)), null,
+                new Rect(TechStatsLayout.BarLeft, top, TechStatsLayout.FullBarWidth, TechStatsLayout.BarHeight));
+            drawingContext.DrawRectangle(Brushes.White, null,
+                new Rect(TechStatsLayout.BarLeft, top, TechStatsLayout.GetBarWidth(value - 200), TechStatsLayout.BarHeight));
             return;
         }
 
         drawingContext.DrawRectangle(new SolidColorBrush(FromGameMakerHsv(55 + value, 200, 255)), null,
-            new Rect(42, top, 47 * Math.Min(value, 200) / 200d, 4));
+            new Rect(TechStatsLayout.BarLeft, top, TechStatsLayout.GetBarWidth(value), TechStatsLayout.BarHeight));
     }
 
     private static void DrawNumber(DrawingContext drawingContext, decimal value, double top)
     {
         var text = decimal.Round(value, 0, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.InvariantCulture);
-        var x = 120 - ((text.Length * 4) + Math.Max(0, text.Length - 1));
+        var x = TechStatsLayout.GetNumberLeft(text.Length);
         foreach (var character in text)
         {
-            drawingContext.DrawImage(Digits[character - '0'], new Rect(x, top, 4, 5));
-            x += 5;
+            drawingContext.DrawImage(Digits[character - '0'],
+                new Rect(x, top, TechStatsLayout.DigitWidth, TechStatsLayout.DigitHeight));
+            x += TechStatsLayout.DigitAdvance;
         }
     }
 
@@ -161,4 +163,30 @@ public sealed class TechStatsRenderer : FrameworkElement
     }
 
     private static byte ToByte(double value) => (byte)Math.Clamp(Math.Floor(value * 255d + 0.5d), 0d, 255d);
+}
+
+internal static class TechStatsLayout
+{
+    public const double Width = 508;
+    public const double Height = 200;
+    public const double LabelWidth = 180;
+    public const double LabelHeight = 200;
+    public const double BarLeft = 189;
+    public const double BarHeight = 25;
+    public const double FullBarWidth = 240;
+    public const double NumberRight = 508;
+    public const double DigitWidth = 20;
+    public const double DigitHeight = 25;
+    public const double DigitAdvance = 25;
+
+    public static double GetRowTop(int row, bool hasGimmick) => row * (hasGimmick ? 35 : 40);
+
+    public static double GetBarWidth(double value)
+    {
+        var fraction = Math.Clamp(value, 0, 200) / 200d;
+        return Math.Ceiling((FullBarWidth / 5d) * fraction) * 5d;
+    }
+
+    public static double GetNumberLeft(int digitCount) =>
+        NumberRight - ((digitCount * DigitWidth) + (Math.Max(0, digitCount - 1) * (DigitAdvance - DigitWidth)));
 }

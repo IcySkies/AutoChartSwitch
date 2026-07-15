@@ -46,7 +46,7 @@ font_add_sprite(sp_font_techstat, 48, true, 1)
 Frame zero therefore maps to ASCII `0`; the font is proportional and uses a
 separation value of 1. Numbers are white and right aligned.
 
-## Native geometry
+## Geometry
 
 All coordinates are logical GameMaker pixels relative to the stat page.
 
@@ -59,11 +59,26 @@ All coordinates are logical GameMaker pixels relative to the stat page.
 | Bar bottom | `rowTop + 4` | `rowTop + 4` |
 | Number anchor | right aligned at `(120, rowTop)` | same |
 
-The bar uses a filled `draw_rectangle`. A maximum bar spans 47 coordinate
-units; GameMaker rasterization may include both endpoints. The surrounding
-statistics surface is 46 pixels high. Reference captures at 508x200 are
-scaled/cropped and should not be used as the native coordinate system.
-Nearest-neighbor integer scaling preserves the source pixel art.
+The bar uses a filled `draw_rectangle`. Its 47-unit endpoint span rasterizes
+to 48 source pixels because both endpoints are included.
+
+For the standalone overlay, the supplied 508x200 reference captures are the
+authoritative output layout. They establish this direct pixel geometry:
+
+| Part | Overlay pixels |
+| --- | --- |
+| Surface | `508x200` |
+| Label sprite | `(0, 0)`, scaled to `180x200` |
+| Six-row tops | `0, 35, 70, 105, 140, 175` |
+| Five-row tops | `0, 40, 80, 120, 160` |
+| Bar | left `189`, height `25`, maximum width `240` |
+| Number anchor | right aligned at `x = 508` |
+| Digit cell | `20x25`, with a `25` pixel advance |
+
+This corresponds to 5x nearest-neighbor sprites, a crop flush with the label
+sprite, inclusive GameMaker rectangle rasterization, and a number column flush
+with the capture's right edge. Fractional bars advance in five-pixel source
+steps using `ceil(48 * fraction) * 5`.
 
 ## Bar animation
 

@@ -26,7 +26,7 @@ Create eight distinct inputs before configuring the app:
 
 Open **OBS and source configuration**, enter the WebSocket URL/password, connect, and select every mapping. Set the difficulty image folder and the entry/exit scenes. The difficulty image for a chart named `Master` is loaded from `DifficultyCustomPath\Master.png`.
 
-The separate **Auto Chart Switch Tech Stats** window is a transparent, draggable capture surface for OBS. It starts blank, then renders the current chart's CHIP, TECH, STREAM, CHORD, BURST, and optional GIMMICK values using the `vivid/stasis` layout. Capture this window directly in OBS; it replaces the former Stat Media source.
+The separate **Auto Chart Switch Tech Stats** window is a transparent, draggable 508x200 capture surface for OBS. It starts blank, then renders the current chart's CHIP, TECH, STREAM, CHORD, BURST, and optional GIMMICK values using the `vivid/stasis` layout. Capture this window directly in OBS; it replaces the former Stat Media source.
 
 Auto-switch uses OBS's currently selected transition. On Pop it changes to the configured entry scene before modifying any mapped source, waits for the configured **Source update delay** (0 to 60000 ms), then updates sources and restarts the Showcase Video. It changes to the exit scene only after OBS reports natural playback completion. Showcase looping must be disabled.
 
