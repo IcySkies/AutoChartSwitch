@@ -33,7 +33,9 @@ public partial class MainViewModel : ObservableObject
 
     public string CurrentDifficulty => CurrentDisplay is null ? "" : $"{CurrentDisplay.DifficultyName} {ChartFormatter.FormatDifficulty(CurrentDisplay.DifficultyNumber)}".TrimEnd();
     public string CurrentCredits => CurrentDisplay?.CreditsText ?? "";
+    public string CurrentTechStats => CurrentDisplay is null ? "" : FormatTechStats(CurrentDisplay.TechStats);
     public bool HasCurrent => CurrentDisplay is not null;
+    public event EventHandler? ShowTechStatsRequested;
 
     public MainViewModel(IChartQueue queue, IChartValidator validator, IChartPublisher publisher,
         ChartWorkflow workflow, AppPersistence persistence, AutoChartSettings settings)
@@ -169,6 +171,9 @@ public partial class MainViewModel : ObservableObject
     private async Task RetrySyncAsync() => await RunPublishAsync(() => _workflow.RetrySyncAsync(Settings));
 
     [RelayCommand]
+    private void ShowTechStats() => ShowTechStatsRequested?.Invoke(this, EventArgs.Empty);
+
+    [RelayCommand]
     private async Task RetryExitAsync()
     {
         var result = await _publisher.RetryExitSceneAsync();
@@ -271,6 +276,7 @@ public partial class MainViewModel : ObservableObject
         CurrentDisplay = _workflow.CurrentDisplay;
         OnPropertyChanged(nameof(CurrentDifficulty));
         OnPropertyChanged(nameof(CurrentCredits));
+        OnPropertyChanged(nameof(CurrentTechStats));
         OnPropertyChanged(nameof(HasCurrent));
         QuickEditCommand.NotifyCanExecuteChanged();
         RetrySyncCommand.NotifyCanExecuteChanged();
@@ -322,6 +328,14 @@ public partial class MainViewModel : ObservableObject
     {
         target.Clear();
         foreach (var value in values.Distinct(StringComparer.Ordinal)) target.Add(value);
+    }
+
+    private static string FormatTechStats(ChartTechStats? stats)
+    {
+        if (stats is null) return "";
+        return $"CHIP {stats.Chip:g}   TECH {stats.Tech:g}   STREAM {stats.Stream:g}\n" +
+               $"CHORD {stats.Chord:g}   BURST {stats.Burst:g}" +
+               (stats.Gimmick > 0 ? $"   GIMMICK {stats.Gimmick:g}" : "");
     }
 
     private void ShowError(string title, string message)

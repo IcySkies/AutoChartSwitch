@@ -6,13 +6,13 @@ namespace AutoChartSwitch.Tests;
 public sealed class ObsContractTests
 {
     [Fact]
-    public void AllNineUniqueCompatibleMappingsValidate()
+    public void AllEightUniqueCompatibleMappingsValidate()
     {
         var mappings = Mappings().AsDictionary();
         var inputs = new List<ObsInputInfo>
         {
             Text("title"), Text("artist"), FreeType("credits"), Text("difficulty-name"), Text("difficulty-number"),
-            Image("jacket"), Image("difficulty-image"), Media("stat"), Media("showcase")
+            Image("jacket"), Image("difficulty-image"), Media("showcase")
         };
 
         Assert.Null(ObsChartPublisher.ValidateMappings(mappings, inputs));
@@ -25,7 +25,7 @@ public sealed class ObsContractTests
         var inputs = new List<ObsInputInfo>
         {
             Text("title"), Text("artist"), Text("credits"), Text("difficulty-name"), Text("difficulty-number"),
-            Image("jacket"), Image("difficulty-image"), Media("stat"), Media("showcase")
+            Image("jacket"), Image("difficulty-image"), Media("showcase")
         };
         Assert.Contains("incompatible", ObsChartPublisher.ValidateMappings(mappings.AsDictionary(), inputs), StringComparison.OrdinalIgnoreCase);
 
@@ -50,7 +50,7 @@ public sealed class ObsContractTests
     {
         Title = "title", Artist = "artist", Credits = "credits", DifficultyName = "difficulty-name",
         DifficultyNumber = "difficulty-number", Jacket = "jacket", DifficultyImage = "difficulty-image",
-        StatMedia = "stat", ShowcaseVideo = "showcase"
+        ShowcaseVideo = "showcase"
     };
 
     private static ObsInputInfo Text(string name) => new(name, "text_gdiplus_v3", "text_gdiplus", ObsInputCategory.Text);

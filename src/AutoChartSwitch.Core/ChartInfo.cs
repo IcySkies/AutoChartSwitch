@@ -12,11 +12,24 @@ public sealed record ChartInfo
     public string DifficultyName { get; init; } = "";
     public decimal DifficultyNumber { get; init; }
     public string JacketPath { get; init; } = "";
-    public string StatMediaPath { get; init; } = "";
+    public ChartTechStats TechStats { get; init; } = new();
     public string ShowcaseVideoPath { get; init; } = "";
 
     [JsonIgnore]
     public string CreditsText => ChartFormatter.FormatCredits(Illustrator, Charter);
+}
+
+public sealed record ChartTechStats
+{
+    public decimal Chip { get; init; }
+    public decimal Tech { get; init; }
+    public decimal Stream { get; init; }
+    public decimal Chord { get; init; }
+    public decimal Burst { get; init; }
+    public decimal Gimmick { get; init; }
+
+    [JsonIgnore]
+    public IReadOnlyList<decimal> Values => [Chip, Tech, Stream, Chord, Burst, Gimmick];
 }
 
 public static class ChartFormatter

@@ -43,7 +43,7 @@ public sealed class ChartInterchange : IChartInterchange
         if (structuralErrors.Count > 0) throw new InvalidDataException(string.Join(Environment.NewLine, structuralErrors));
 
         var warnings = charts.SelectMany((chart, index) =>
-            new[] { chart.JacketPath, chart.StatMediaPath, chart.ShowcaseVideoPath }
+            new[] { chart.JacketPath, chart.ShowcaseVideoPath }
                 .Where(file => !File.Exists(file))
                 .Select(file => $"Chart {index + 1}: file not found: {file}"))
             .ToList();
@@ -66,7 +66,7 @@ public sealed class ChartInterchange : IChartInterchange
         Charter = chart.Charter.Trim(),
         DifficultyName = chart.DifficultyName.Trim(),
         JacketPath = Resolve(chart.JacketPath, basePath),
-        StatMediaPath = Resolve(chart.StatMediaPath, basePath),
+        TechStats = chart.TechStats ?? new(),
         ShowcaseVideoPath = Resolve(chart.ShowcaseVideoPath, basePath)
     };
 

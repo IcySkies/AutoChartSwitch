@@ -161,17 +161,10 @@ public sealed class ObsChartPublisher : IChartPublisher
                 }
             }
 
-            foreach (var output in outputs.Where(x => x is not ObsOutput.StatMedia and not ObsOutput.ShowcaseVideo))
+            foreach (var output in outputs.Where(x => x is not ObsOutput.ShowcaseVideo))
             {
                 SetValue(mapping[output], output, currentValues[output]);
                 modified.Add(output);
-            }
-
-            if (outputs.Contains(ObsOutput.StatMedia))
-            {
-                SetValue(mapping[ObsOutput.StatMedia], ObsOutput.StatMedia, currentValues[ObsOutput.StatMedia]);
-                modified.Add(ObsOutput.StatMedia);
-                _client.TriggerMediaInputAction(mapping[ObsOutput.StatMedia], RestartAction);
             }
 
             if (outputs.Contains(ObsOutput.ShowcaseVideo))
@@ -239,7 +232,7 @@ public sealed class ObsChartPublisher : IChartPublisher
 
     internal static string? ValidateMappings(IReadOnlyDictionary<ObsOutput, string> mappings, IReadOnlyList<ObsInputInfo> inputs)
     {
-        if (mappings.Values.Any(string.IsNullOrWhiteSpace)) return "All nine OBS source mappings are required.";
+        if (mappings.Values.Any(string.IsNullOrWhiteSpace)) return "All eight OBS source mappings are required.";
         var duplicate = mappings.Values.GroupBy(x => x, StringComparer.Ordinal).FirstOrDefault(x => x.Count() > 1);
         if (duplicate is not null) return $"OBS source '{duplicate.Key}' is assigned more than once.";
         var lookup = inputs.ToDictionary(x => x.Name, StringComparer.Ordinal);
@@ -251,7 +244,7 @@ public sealed class ObsChartPublisher : IChartPublisher
                 ObsOutput.Credits => input.Category == ObsInputCategory.FreeTypeText,
                 ObsOutput.Title or ObsOutput.Artist or ObsOutput.DifficultyName or ObsOutput.DifficultyNumber => input.Category is ObsInputCategory.Text or ObsInputCategory.FreeTypeText,
                 ObsOutput.Jacket or ObsOutput.DifficultyImage => input.Category == ObsInputCategory.Image,
-                ObsOutput.StatMedia or ObsOutput.ShowcaseVideo => input.Category == ObsInputCategory.Media,
+                ObsOutput.ShowcaseVideo => input.Category == ObsInputCategory.Media,
                 _ => false
             };
             if (!valid) return $"OBS source '{input.Name}' has incompatible kind '{input.Kind}' for {pair.Key}.";
@@ -269,7 +262,6 @@ public sealed class ObsChartPublisher : IChartPublisher
             [ObsOutput.DifficultyNumber] = ChartFormatter.FormatDifficulty(chart.DifficultyNumber),
             [ObsOutput.Jacket] = Path.GetFullPath(chart.JacketPath),
             [ObsOutput.DifficultyImage] = difficultyImagePath,
-            [ObsOutput.StatMedia] = Path.GetFullPath(chart.StatMediaPath),
             [ObsOutput.ShowcaseVideo] = Path.GetFullPath(chart.ShowcaseVideoPath)
         };
 
@@ -288,7 +280,7 @@ public sealed class ObsChartPublisher : IChartPublisher
     internal static string GetSettingKey(ObsOutput output) => output switch
     {
         ObsOutput.Jacket or ObsOutput.DifficultyImage => "file",
-        ObsOutput.StatMedia or ObsOutput.ShowcaseVideo => "local_file",
+        ObsOutput.ShowcaseVideo => "local_file",
         _ => "text"
     };
 

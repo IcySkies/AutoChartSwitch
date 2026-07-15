@@ -47,6 +47,15 @@ public sealed class FormatterAndValidationTests
         Assert.Contains(result.Issues, x => x.Message == "File does not exist.");
     }
 
+    [Fact]
+    public void NegativeTechStatsAreRejected()
+    {
+        var result = new ChartValidator().Validate(ValidChart() with { TechStats = new() { Chip = -0.1m } }, "C:\\difficulty", false);
+
+        Assert.False(result.CanSave);
+        Assert.Contains(result.Issues, x => x.Field == "TechStats.Chip");
+    }
+
     public static ChartInfo ValidChart(Guid? id = null) => new()
     {
         Id = id ?? Guid.NewGuid(),
@@ -57,7 +66,7 @@ public sealed class FormatterAndValidationTests
         DifficultyName = "Master",
         DifficultyNumber = 12.3m,
         JacketPath = Path.GetFullPath("jacket.png"),
-        StatMediaPath = Path.GetFullPath("stat.mp4"),
+        TechStats = new() { Chip = 30m, Tech = 40m, Stream = 50m, Chord = 60m, Burst = 70m },
         ShowcaseVideoPath = Path.GetFullPath("showcase.mp4")
     };
 }
