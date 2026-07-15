@@ -89,7 +89,6 @@ public sealed class ChartWorkflow
             DifficultyNumber = settings.Mappings.DifficultyNumber,
             Jacket = settings.Mappings.Jacket,
             DifficultyImage = settings.Mappings.DifficultyImage,
-            StatMedia = settings.Mappings.StatMedia,
             ShowcaseVideo = settings.Mappings.ShowcaseVideo
         }
     };

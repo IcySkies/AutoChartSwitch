@@ -11,7 +11,7 @@ Auto Chart Switch is a Windows operator application for preparing an ordered cha
 
 ## OBS setup
 
-Create nine distinct inputs before configuring the app:
+Create eight distinct inputs before configuring the app:
 
 | Mapping | Compatible OBS input | Updated setting |
 | --- | --- | --- |
@@ -22,10 +22,11 @@ Create nine distinct inputs before configuring the app:
 | Difficulty Number | GDI+ or FreeType text | `text` |
 | Jacket | Image | `file` |
 | Difficulty Image | Image | `file` |
-| Stat Media | Media Source | `local_file` |
 | Showcase Video | Media Source | `local_file` |
 
 Open **OBS and source configuration**, enter the WebSocket URL/password, connect, and select every mapping. Set the difficulty image folder and the entry/exit scenes. The difficulty image for a chart named `Master` is loaded from `DifficultyCustomPath\Master.png`.
+
+The separate **Auto Chart Switch Tech Stats** window is a transparent, draggable 508x200 capture surface for OBS. It starts blank, then renders the current chart's CHIP, TECH, STREAM, CHORD, BURST, and optional GIMMICK values using the `vivid/stasis` layout. Capture this window directly in OBS; it replaces the former Stat Media source.
 
 Auto-switch uses OBS's currently selected transition. On Pop it changes to the configured entry scene before modifying any mapped source, waits for the configured **Source update delay** (0 to 60000 ms), then updates sources and restarts the Showcase Video. It changes to the exit scene only after OBS reports natural playback completion. Showcase looping must be disabled.
 
@@ -54,7 +55,14 @@ Queue and settings autosave under `%LOCALAPPDATA%\SVC-AS\AutoChartSwitch`. The O
       "difficultyName": "Master",
       "difficultyNumber": 12.3,
       "jacketPath": "assets/jacket.png",
-      "statMediaPath": "assets/stat.mp4",
+      "techStats": {
+        "chip": 110,
+        "tech": 95,
+        "stream": 180,
+        "chord": 72,
+        "burst": 130,
+        "gimmick": 0
+      },
       "showcaseVideoPath": "assets/showcase.mp4"
     }
   ]
@@ -81,5 +89,5 @@ dotnet run --project src\AutoChartSwitch.App\AutoChartSwitch.App.csproj
 
 - `AutoChartSwitch.Core`: chart records, validation, queue, workflow, formatting, JSON, and persistence primitives
 - `AutoChartSwitch.Obs`: OBS WebSocket transport, mapping validation, transactional publishing, rollback, and media lifecycle
-- `AutoChartSwitch.App`: WPF operator UI and Windows settings persistence
+- `AutoChartSwitch.App`: WPF operator UI, transparent `vivid/stasis` tech-stat capture surface, and Windows settings persistence
 - `AutoChartSwitch.Tests`: formatting, validation, queue, interchange, workflow, and OBS contract tests

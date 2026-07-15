@@ -59,13 +59,11 @@ public sealed class WorkflowTests : IDisposable
     private ChartInfo CreateDisplayableChart()
     {
         var jacket = CreateFile("jacket.png");
-        var stat = CreateFile("stat.mp4");
         var showcase = CreateFile("showcase.mp4");
         CreateFile("Master.png");
         return FormatterAndValidationTests.ValidChart() with
         {
             JacketPath = jacket,
-            StatMediaPath = stat,
             ShowcaseVideoPath = showcase
         };
     }

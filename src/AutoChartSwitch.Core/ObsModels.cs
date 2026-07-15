@@ -9,7 +9,6 @@ public enum ObsOutput
     DifficultyNumber,
     Jacket,
     DifficultyImage,
-    StatMedia,
     ShowcaseVideo
 }
 
@@ -26,7 +25,6 @@ public sealed class ObsSourceMappings
     public string DifficultyNumber { get; set; } = "";
     public string Jacket { get; set; } = "";
     public string DifficultyImage { get; set; } = "";
-    public string StatMedia { get; set; } = "";
     public string ShowcaseVideo { get; set; } = "";
 
     public IReadOnlyDictionary<ObsOutput, string> AsDictionary() => new Dictionary<ObsOutput, string>
@@ -38,7 +36,6 @@ public sealed class ObsSourceMappings
         [ObsOutput.DifficultyNumber] = DifficultyNumber,
         [ObsOutput.Jacket] = Jacket,
         [ObsOutput.DifficultyImage] = DifficultyImage,
-        [ObsOutput.StatMedia] = StatMedia,
         [ObsOutput.ShowcaseVideo] = ShowcaseVideo
     };
 }

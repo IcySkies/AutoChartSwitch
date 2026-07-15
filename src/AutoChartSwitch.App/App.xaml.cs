@@ -12,6 +12,7 @@ public partial class App : System.Windows.Application
     private System.Windows.Forms.NotifyIcon? _notifyIcon;
     private System.Drawing.Icon? _trayIcon;
     private MainViewModel? _viewModel;
+    private TechStatsWindow? _techStatsWindow;
 
     protected override async void OnStartup(StartupEventArgs e)
     {
@@ -40,8 +41,11 @@ public partial class App : System.Windows.Application
 
         var window = new MainWindow { DataContext = _viewModel };
         MainWindow = window;
+        _techStatsWindow = new TechStatsWindow(_viewModel);
+        _viewModel.ShowTechStatsRequested += (_, _) => ShowTechStatsWindow();
         ConfigureNotificationArea(window);
         window.Show();
+        _techStatsWindow.Show();
         await _viewModel.InitializeAsync();
     }
 
@@ -83,6 +87,13 @@ public partial class App : System.Windows.Application
         MainWindow.Activate();
     }
 
+    private void ShowTechStatsWindow()
+    {
+        if (_techStatsWindow is null) return;
+        if (!_techStatsWindow.IsVisible) _techStatsWindow.Show();
+        _techStatsWindow.Activate();
+    }
+
     private async Task ExitApplicationAsync()
     {
         if (_isExiting) return;
@@ -91,6 +102,8 @@ public partial class App : System.Windows.Application
         try
         {
             if (_viewModel is not null) await _viewModel.ShutdownAsync();
+            _techStatsWindow?.AllowClose();
+            _techStatsWindow?.Close();
         }
         finally
         {

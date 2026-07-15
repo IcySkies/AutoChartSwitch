@@ -43,6 +43,8 @@ public sealed class QueueAndInterchangeTests : IDisposable
 
         Assert.Equal(["Song", "Second"], preview.Charts.Select(x => x.Title));
         Assert.All(preview.Charts, x => Assert.True(Path.IsPathFullyQualified(x.JacketPath)));
+        Assert.Equal(30m, preview.Charts[0].TechStats.Chip);
+        Assert.DoesNotContain("\"values\"", await File.ReadAllTextAsync(path));
     }
 
     [Fact]
@@ -52,7 +54,6 @@ public sealed class QueueAndInterchangeTests : IDisposable
         var chart = FormatterAndValidationTests.ValidChart() with
         {
             JacketPath = "assets/jacket.png",
-            StatMediaPath = "assets/stat.mp4",
             ShowcaseVideoPath = "assets/showcase.mp4"
         };
         var json = JsonSerializer.Serialize(new { schemaVersion = 1, charts = new[] { chart } }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });

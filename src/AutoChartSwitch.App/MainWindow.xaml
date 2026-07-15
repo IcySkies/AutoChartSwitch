@@ -23,6 +23,7 @@
                               VerticalAlignment="Center" Margin="0,0,16,0" Checked="SettingsChanged" Unchecked="SettingsChanged" />
                     <Button Content="Connect / Disconnect" Command="{Binding ConnectCommand}" />
                     <Button Content="Refresh OBS" Command="{Binding RefreshSourcesCommand}" />
+                    <Button Content="Tech Stats" Command="{Binding ShowTechStatsCommand}" />
                     <Button Content="Pop Front" Command="{Binding PopCommand}" Style="{StaticResource PrimaryButton}" Margin="8,0,0,0" MinWidth="104" />
                 </StackPanel>
             </DockPanel>
@@ -117,7 +118,7 @@
                         <TextBlock Grid.Row="2" Text="Credits" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentCredits}" Margin="0,4" TextWrapping="Wrap" />
                         <TextBlock Grid.Row="3" Text="Difficulty" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CurrentDifficulty}" Margin="0,4" />
                         <TextBlock Grid.Row="4" Text="Jacket" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding CurrentDisplay.JacketPath}" Margin="0,4" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentDisplay.JacketPath}" />
-                        <TextBlock Grid.Row="5" Text="Stat media" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CurrentDisplay.StatMediaPath}" Margin="0,4" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentDisplay.StatMediaPath}" />
+                        <TextBlock Grid.Row="5" Text="Tech stats" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CurrentTechStats}" Margin="0,4" TextWrapping="Wrap" />
                         <TextBlock Grid.Row="6" Text="Showcase" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding CurrentDisplay.ShowcaseVideoPath}" Margin="0,4" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentDisplay.ShowcaseVideoPath}" />
                         <TextBlock Grid.Row="7" Grid.ColumnSpan="2" Text="No chart has been displayed in this session." Foreground="#69747B" Margin="0,18,0,0">
                             <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed" /><Style.Triggers><DataTrigger Binding="{Binding HasCurrent}" Value="False"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></TextBlock.Style>
@@ -156,7 +157,6 @@
                             <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Difficulty number" /><ComboBox ItemsSource="{Binding TextInputs}" Text="{Binding Settings.Mappings.DifficultyNumber, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
                             <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Jacket image" /><ComboBox ItemsSource="{Binding ImageInputs}" Text="{Binding Settings.Mappings.Jacket, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
                             <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Difficulty image" /><ComboBox ItemsSource="{Binding ImageInputs}" Text="{Binding Settings.Mappings.DifficultyImage, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
-                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Stat media" /><ComboBox ItemsSource="{Binding MediaInputs}" Text="{Binding Settings.Mappings.StatMedia, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
                             <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Showcase video" /><ComboBox ItemsSource="{Binding MediaInputs}" Text="{Binding Settings.Mappings.ShowcaseVideo, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
                         </WrapPanel>
                     </StackPanel>
