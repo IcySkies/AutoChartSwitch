@@ -27,11 +27,20 @@ public sealed class ChartValidator : IChartValidator
         Require(chart.Charter, nameof(chart.Charter), issues);
         Require(chart.DifficultyName, nameof(chart.DifficultyName), issues);
         Require(chart.JacketPath, nameof(chart.JacketPath), issues);
-        Require(chart.StatMediaPath, nameof(chart.StatMediaPath), issues);
         Require(chart.ShowcaseVideoPath, nameof(chart.ShowcaseVideoPath), issues);
 
         if (chart.DifficultyNumber is < 0m or > 99.9m || decimal.Round(chart.DifficultyNumber, 1) != chart.DifficultyNumber)
             issues.Add(new(nameof(chart.DifficultyNumber), "Enter a value from 0.0 to 99.9 with at most one decimal place.", true));
+
+        if (chart.TechStats is null)
+            issues.Add(new(nameof(chart.TechStats), "Tech stats are required.", true));
+        else
+        {
+            var statNames = new[] { nameof(ChartTechStats.Chip), nameof(ChartTechStats.Tech), nameof(ChartTechStats.Stream), nameof(ChartTechStats.Chord), nameof(ChartTechStats.Burst), nameof(ChartTechStats.Gimmick) };
+            for (var i = 0; i < chart.TechStats.Values.Count; i++)
+                if (chart.TechStats.Values[i] < 0m)
+                    issues.Add(new($"{nameof(chart.TechStats)}.{statNames[i]}", "Enter a non-negative value.", true));
+        }
 
         if (string.IsNullOrWhiteSpace(difficultyCustomPath))
             issues.Add(new(nameof(difficultyCustomPath), "Difficulty image folder is required.", true));
@@ -41,7 +50,6 @@ public sealed class ChartValidator : IChartValidator
         if (checkFiles)
         {
             CheckFile(chart.JacketPath, nameof(chart.JacketPath), issues);
-            CheckFile(chart.StatMediaPath, nameof(chart.StatMediaPath), issues);
             CheckFile(chart.ShowcaseVideoPath, nameof(chart.ShowcaseVideoPath), issues);
             if (!string.IsNullOrWhiteSpace(difficultyCustomPath) &&
                 chart.DifficultyName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0)

@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="Assets\Icon.ico" />
+    <Resource Include="Assets\TechStats\Original\*.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoChartSwitch.Core\AutoChartSwitch.Core.csproj" />
