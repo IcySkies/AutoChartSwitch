@@ -1,0 +1,171 @@
+<Window x:Class="AutoChartSwitch.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Auto Chart Switch" Width="1420" Height="860" MinWidth="1080" MinHeight="680"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#202B31" Padding="14,8">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="AUTO CHART SWITCH" Foreground="White" FontWeight="SemiBold" FontSize="15" VerticalAlignment="Center" Margin="0,0,20,0" />
+                    <TextBlock Text="OBS" Foreground="#AEBBC1" VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <TextBlock Text="{Binding ConnectionText}" Foreground="#70D6B7" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <CheckBox Content="Auto-switch" IsChecked="{Binding Settings.AutoSwitch, Mode=TwoWay}" Foreground="White"
+                              VerticalAlignment="Center" Margin="0,0,16,0" Checked="SettingsChanged" Unchecked="SettingsChanged" />
+                    <Button Content="Connect / Disconnect" Command="{Binding ConnectCommand}" />
+                    <Button Content="Refresh OBS" Command="{Binding RefreshSourcesCommand}" />
+                    <Button Content="Pop Front" Command="{Binding PopCommand}" Style="{StaticResource PrimaryButton}" Margin="8,0,0,0" MinWidth="104" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="14,12,14,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" MinWidth="590" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="2*" MinWidth="360" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <DockPanel Margin="0,0,0,8">
+                    <TextBlock Text="Chart Queue" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="Insert Front" Command="{Binding InsertFrontCommand}" />
+                        <Button Content="Insert Back" Command="{Binding InsertBackCommand}" />
+                        <Button Content="Import" Command="{Binding ImportCommand}" />
+                        <Button Content="Export" Command="{Binding ExportCommand}" Margin="0" />
+                    </StackPanel>
+                </DockPanel>
+                <DataGrid x:Name="QueueGrid" Grid.Row="1" ItemsSource="{Binding QueueRows}" SelectedItem="{Binding SelectedRow}"
+                          AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+                          GridLinesVisibility="Horizontal" BorderBrush="{StaticResource BorderBrush}"
+                          PreviewMouseLeftButtonDown="QueueGrid_PreviewMouseLeftButtonDown" PreviewMouseMove="QueueGrid_PreviewMouseMove"
+                          Drop="QueueGrid_Drop" AllowDrop="True" AlternationCount="10000">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#" Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=AlternationIndex}" Width="42" />
+                        <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="2*" MinWidth="160" />
+                        <DataGridTextColumn Header="Artist" Binding="{Binding Artist}" Width="*" MinWidth="110" />
+                        <DataGridTextColumn Header="Difficulty" Binding="{Binding DifficultyName}" Width="100" />
+                        <DataGridTextColumn Header="Level" Binding="{Binding Difficulty}" Width="62" />
+                        <DataGridTemplateColumn Header="Files" Width="72">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock HorizontalAlignment="Center" ToolTip="{Binding Validation}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="Ready" />
+                                                <Setter Property="Foreground" Value="#167D6B" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasWarning}" Value="True">
+                                                        <Setter Property="Text" Value="Warning" />
+                                                        <Setter Property="Foreground" Value="#B36B00" />
+                                                        <Setter Property="FontWeight" Value="SemiBold" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="8">
+                    <Button Content="Edit" Command="{Binding EditSelectedCommand}" />
+                    <Button Content="Delete" Command="{Binding DeleteSelectedCommand}" Foreground="{StaticResource DangerBrush}" />
+                    <Button Content="Move Up" Command="{Binding MoveUpCommand}" />
+                    <Button Content="Move Down" Command="{Binding MoveDownCommand}" />
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Column="2" Background="{StaticResource PanelBackground}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <DockPanel Margin="0,0,0,12">
+                        <TextBlock Text="Current Display" FontSize="17" FontWeight="SemiBold" />
+                        <TextBlock DockPanel.Dock="Right" Text="On-air snapshot" Foreground="#69747B" />
+                    </DockPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="112" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Title" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Column="1" Text="{Binding CurrentDisplay.Title}" FontWeight="SemiBold" Margin="0,4" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="1" Text="Artist" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentDisplay.Artist}" Margin="0,4" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="2" Text="Credits" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentCredits}" Margin="0,4" TextWrapping="Wrap" />
+                        <TextBlock Grid.Row="3" Text="Difficulty" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CurrentDifficulty}" Margin="0,4" />
+                        <TextBlock Grid.Row="4" Text="Jacket" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding CurrentDisplay.JacketPath}" Margin="0,4" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentDisplay.JacketPath}" />
+                        <TextBlock Grid.Row="5" Text="Stat media" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CurrentDisplay.StatMediaPath}" Margin="0,4" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentDisplay.StatMediaPath}" />
+                        <TextBlock Grid.Row="6" Text="Showcase" Foreground="#69747B" Margin="0,4" /><TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding CurrentDisplay.ShowcaseVideoPath}" Margin="0,4" TextTrimming="CharacterEllipsis" ToolTip="{Binding CurrentDisplay.ShowcaseVideoPath}" />
+                        <TextBlock Grid.Row="7" Grid.ColumnSpan="2" Text="No chart has been displayed in this session." Foreground="#69747B" Margin="0,18,0,0">
+                            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed" /><Style.Triggers><DataTrigger Binding="{Binding HasCurrent}" Value="False"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
+                    </Grid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,14,0,0">
+                        <Button Content="Quick Edit" Command="{Binding QuickEditCommand}" />
+                        <Button Content="Retry Sync" Command="{Binding RetrySyncCommand}" />
+                        <Button Content="Retry Exit Scene" Command="{Binding RetryExitCommand}">
+                            <Button.Style><Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}"><Setter Property="Visibility" Value="Collapsed" /><Style.Triggers><DataTrigger Binding="{Binding HasExitError}" Value="True"><Setter Property="Visibility" Value="Visible" /></DataTrigger></Style.Triggers></Style></Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Expander Grid.Row="2" Header="OBS and source configuration" Margin="14,0,14,10" IsExpanded="False">
+            <Border Background="{StaticResource PanelBackground}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Padding="12">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel x:Name="SettingsPanel" LostKeyboardFocus="SettingsPanel_LostKeyboardFocus">
+                        <WrapPanel Margin="0,0,0,10">
+                            <StackPanel Width="240" Margin="0,0,12,0"><TextBlock Text="OBS WebSocket URL" /><TextBox Text="{Binding Settings.ObsUrl, UpdateSourceTrigger=PropertyChanged}" /></StackPanel>
+                            <StackPanel Width="180" Margin="0,0,12,0"><TextBlock Text="Password" /><PasswordBox x:Name="ObsPasswordBox" PasswordChanged="ObsPasswordBox_PasswordChanged" Loaded="ObsPasswordBox_Loaded" MinHeight="28" Padding="5,3" /></StackPanel>
+                            <CheckBox Content="Connect automatically" IsChecked="{Binding Settings.AutoConnect}" VerticalAlignment="Bottom" Margin="0,0,18,6" Checked="SettingsChanged" Unchecked="SettingsChanged" />
+                            <StackPanel Width="300" Margin="0,0,12,0"><TextBlock Text="Difficulty image folder" /><DockPanel><Button DockPanel.Dock="Right" Content="Browse" Command="{Binding BrowseDifficultyFolderCommand}" Margin="6,0,0,0" /><TextBox Text="{Binding Settings.DifficultyCustomPath}" /></DockPanel></StackPanel>
+                            <StackPanel Width="180" Margin="0,0,12,0"><TextBlock Text="Entry scene" /><ComboBox ItemsSource="{Binding Scenes}" Text="{Binding Settings.EntryScene, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="180"><TextBlock Text="Exit scene" /><ComboBox ItemsSource="{Binding Scenes}" Text="{Binding Settings.ExitScene, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="200" Margin="12,0,0,0"><TextBlock Text="Source update delay (ms)" /><TextBox Text="{Binding Settings.TransitionToSourceDelayMilliseconds, UpdateSourceTrigger=PropertyChanged}" ToolTip="Applied after the Auto-switch entry transition; 0 to 60000 ms." /></StackPanel>
+                        </WrapPanel>
+                        <TextBlock Text="Required OBS input mappings" FontWeight="SemiBold" Margin="0,0,0,5" />
+                        <WrapPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Title text" /><ComboBox ItemsSource="{Binding TextInputs}" Text="{Binding Settings.Mappings.Title, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Artist text" /><ComboBox ItemsSource="{Binding TextInputs}" Text="{Binding Settings.Mappings.Artist, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Credits (FreeType)" /><ComboBox ItemsSource="{Binding FreeTypeInputs}" Text="{Binding Settings.Mappings.Credits, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Difficulty name" /><ComboBox ItemsSource="{Binding TextInputs}" Text="{Binding Settings.Mappings.DifficultyName, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Difficulty number" /><ComboBox ItemsSource="{Binding TextInputs}" Text="{Binding Settings.Mappings.DifficultyNumber, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Jacket image" /><ComboBox ItemsSource="{Binding ImageInputs}" Text="{Binding Settings.Mappings.Jacket, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Difficulty image" /><ComboBox ItemsSource="{Binding ImageInputs}" Text="{Binding Settings.Mappings.DifficultyImage, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Stat media" /><ComboBox ItemsSource="{Binding MediaInputs}" Text="{Binding Settings.Mappings.StatMedia, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                            <StackPanel Width="170" Margin="0,0,10,8"><TextBlock Text="Showcase video" /><ComboBox ItemsSource="{Binding MediaInputs}" Text="{Binding Settings.Mappings.ShowcaseVideo, UpdateSourceTrigger=PropertyChanged}" IsEditable="True" SelectionChanged="SettingsChanged" /></StackPanel>
+                        </WrapPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Expander>
+
+        <Border Grid.Row="3" Background="#E7EAED" Padding="12,6">
+            <TextBlock Text="{Binding StatusText}" TextTrimming="CharacterEllipsis" ToolTip="{Binding StatusText}" />
+        </Border>
+    </Grid>
+</Window>

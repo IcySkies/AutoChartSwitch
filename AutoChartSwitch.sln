@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoChartSwitch.Core", "src\AutoChartSwitch.Core\AutoChartSwitch.Core.csproj", "{2B77654B-D510-4E96-9441-14332C5AF4F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoChartSwitch.Obs", "src\AutoChartSwitch.Obs\AutoChartSwitch.Obs.csproj", "{9A066D4B-A3CD-4E2A-9E4F-10D0B028483D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoChartSwitch.App", "src\AutoChartSwitch.App\AutoChartSwitch.App.csproj", "{17A1CB86-C685-490D-97D9-4F66451EB7F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoChartSwitch.Tests", "tests\AutoChartSwitch.Tests\AutoChartSwitch.Tests.csproj", "{6DB998F1-42C3-4F79-B222-318C6E57A5CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B77654B-D510-4E96-9441-14332C5AF4F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B77654B-D510-4E96-9441-14332C5AF4F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B77654B-D510-4E96-9441-14332C5AF4F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B77654B-D510-4E96-9441-14332C5AF4F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A066D4B-A3CD-4E2A-9E4F-10D0B028483D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A066D4B-A3CD-4E2A-9E4F-10D0B028483D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A066D4B-A3CD-4E2A-9E4F-10D0B028483D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A066D4B-A3CD-4E2A-9E4F-10D0B028483D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A1CB86-C685-490D-97D9-4F66451EB7F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A1CB86-C685-490D-97D9-4F66451EB7F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A1CB86-C685-490D-97D9-4F66451EB7F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A1CB86-C685-490D-97D9-4F66451EB7F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DB998F1-42C3-4F79-B222-318C6E57A5CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DB998F1-42C3-4F79-B222-318C6E57A5CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DB998F1-42C3-4F79-B222-318C6E57A5CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DB998F1-42C3-4F79-B222-318C6E57A5CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
